@@ -1,7 +1,7 @@
 # Packtpub_get_daily_book
-Script download image, title from packtpub free learning and send to telegram bot.
+Script download image, title from packtpub free learning and send to discord bot.
 <br />
 ## .env file
-user id = "Your user id from telegram"
+DISCORD_BOT_TOKEN = "Your bot token from discord"
 <br />
-api_bot = "api bot telegram"
+DISCORD_CHANNEL_ID = "Your channel id."
