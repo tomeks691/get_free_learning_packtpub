@@ -1,10 +1,8 @@
 import os
-
 import requests
-import telepot
 from bs4 import BeautifulSoup
+import discord
 from dotenv import load_dotenv, find_dotenv
-
 
 def get_daily_book():
     url = "https://www.packtpub.com/free-learning"
@@ -18,15 +16,26 @@ def get_daily_book():
             title = book_image['alt']
     return image, title
 
-
-def send_to_telegram(image, title):
+def send_to_discord(image, title):
     load_dotenv(find_dotenv())
-    api_bot = os.environ.get("api_bot")
-    chat_id = os.environ.get("chat_id")
-    bot = telepot.Bot(api_bot)
-    bot.sendMessage(chat_id, title)
-    bot.sendPhoto(chat_id, image)
+    discord_token = os.environ.get("DISCORD_BOT_TOKEN")
+    channel_id = int(os.environ.get("DISCORD_CHANNEL_ID"))
 
+    intents = discord.Intents.default()
+    client = discord.Client(intents=intents)
+
+    @client.event
+    async def on_ready():
+        channel = client.get_channel(channel_id)
+
+        if channel:
+            embed = discord.Embed(title=title)
+            embed.set_image(url=image)
+            await channel.send(embed=embed)
+
+            await client.close()
+
+    client.run(discord_token)
 
 image, title = get_daily_book()
-send_to_telegram(image, title)
+send_to_discord(image, title)
